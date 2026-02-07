@@ -2,10 +2,58 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .skill_extractor import extract_skills
-
-
-from .models import Resume
+from .models import Resume, JobDescription
 from .parser import extract_text_from_pdf
+from .serializers import JDSerializer
+from .matcher import skill_match_score
+
+
+class MatchAPI(APIView):
+
+    def get(self, request, jd_id):
+
+        jd = JobDescription.objects.get(id=jd_id)
+        resumes = Resume.objects.all()
+
+        results = []
+
+        for r in resumes:
+            score, matched = skill_match_score(jd.skills, r.skills)
+
+            results.append({
+                "resume_id": r.id,
+                "name": r.original_name,
+                "score": score,
+                "matched_skills": matched
+            })
+
+        results.sort(key=lambda x: x["score"], reverse=True)
+
+        return Response(results)
+
+
+
+class JDCreateAPI(APIView):
+
+    def post(self, request):
+        title = request.data.get("title")
+        text = request.data.get("text")
+
+        skills = extract_skills(text)
+
+        jd = JobDescription.objects.create(
+            title=title,
+            text=text,
+            skills=skills
+        )
+
+        return Response({
+            "id": jd.id,
+            "title": jd.title,
+            "skills": skills
+        })
+
+
 
 
 class ResumeUploadAPI(APIView):
