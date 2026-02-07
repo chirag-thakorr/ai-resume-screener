@@ -5,6 +5,8 @@ def extract_text_from_pdf(path):
     text = ""
 
     for page in reader.pages:
-        text += page.extract_text() or ""
+        page_text = page.extract_text()
+        if page_text:
+            text += page_text
 
     return text

@@ -3,13 +3,18 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Resume
-from .serializers import ResumeSerializer
 from .parser import extract_text_from_pdf
 
 
 class ResumeUploadAPI(APIView):
 
     def post(self, request):
+        if "file" not in request.FILES:
+            return Response(
+                {"error": "file required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         file = request.FILES["file"]
 
         resume = Resume.objects.create(
@@ -24,5 +29,5 @@ class ResumeUploadAPI(APIView):
         return Response({
             "id": resume.id,
             "name": resume.original_name,
-            "chars": len(text)
+            "text_length": len(text)
         })
