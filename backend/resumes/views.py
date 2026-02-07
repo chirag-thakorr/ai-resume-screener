@@ -1,11 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .skill_extractor import extract_skills
+from .scripts.skill_extractor import extract_skills
 from .models import Resume, JobDescription
-from .parser import extract_text_from_pdf
+from .scripts.parser import extract_text_from_pdf
 from .serializers import JDSerializer
-from .matcher import skill_match_score
+from .scripts.matcher import skill_match_score
 
 
 class MatchAPI(APIView):
