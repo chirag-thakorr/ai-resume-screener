@@ -5,7 +5,7 @@ from .scripts.skill_extractor import extract_skills
 from .models import Resume, JobDescription
 from .scripts.parser import extract_text_from_pdf
 from .serializers import JDSerializer
-from .scripts.matcher import skill_match_score
+from .scripts.matcher import skill_match_score, combined_score
 
 
 class MatchAPI(APIView):
@@ -18,16 +18,25 @@ class MatchAPI(APIView):
         results = []
 
         for r in resumes:
-            score, matched = skill_match_score(jd.skills, r.skills)
+            # score, matched = skill_match_score(jd.skills, r.skills)
+            score, matched, sem = combined_score(jd, r)
 
             results.append({
                 "resume_id": r.id,
                 "name": r.original_name,
-                "score": score,
+                "final_score": score,
+                "skill_score": len(matched),
+                "semantic_score": sem,
                 "matched_skills": matched
             })
+            # results.append({
+            #     "resume_id": r.id,
+            #     "name": r.original_name,
+            #     "score": score,
+            #     "matched_skills": matched
+            # })
 
-        results.sort(key=lambda x: x["score"], reverse=True)
+        results.sort(key=lambda x: x["final_score"], reverse=True)
 
         return Response(results)
 
