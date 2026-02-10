@@ -6,6 +6,31 @@ from .models import Resume, JobDescription
 from .scripts.parser import extract_text_from_pdf
 from .serializers import JDSerializer
 from .scripts.matcher import skill_match_score, combined_score
+from .scripts.vector_store import build_index, search_similar
+
+
+class SemanticSearchAPI(APIView):
+
+    def get(self, request, jd_id):
+
+        jd = JobDescription.objects.get(id=jd_id)
+        resumes = Resume.objects.all()
+
+        build_index(resumes)
+
+        top_ids = search_similar(jd.text, top_k=5)
+
+        ordered = Resume.objects.filter(id__in=top_ids)
+
+        data = [
+            {
+                "resume_id": r.id,
+                "name": r.original_name
+            }
+            for r in ordered
+        ]
+
+        return Response(data)
 
 
 class MatchAPI(APIView):
