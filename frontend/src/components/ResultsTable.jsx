@@ -1,4 +1,9 @@
 export default function ResultsTable({ data }) {
+
+  if (!data || data.length === 0) {
+    return <p>No matches found</p>;
+  }
+
   return (
     <table border="1">
       <thead>
@@ -9,6 +14,7 @@ export default function ResultsTable({ data }) {
           <th>Skills</th>
         </tr>
       </thead>
+
       <tbody>
         {data.map(r => (
           <tr key={r.resume_id}>

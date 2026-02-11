@@ -40,6 +40,12 @@ class MatchAPI(APIView):
         jd = JobDescription.objects.get(id=jd_id)
         resumes = Resume.objects.all()
 
+        if not resumes.exists():
+            return Response({
+                "message": "No resumes uploaded yet",
+                "results": []
+            })
+
         results = []
 
         for r in resumes:

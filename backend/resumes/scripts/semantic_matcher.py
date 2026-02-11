@@ -6,6 +6,9 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def semantic_score(text1, text2):
 
+    if not text1 or not text2:
+        return 0.0
+
     emb1 = model.encode([text1])
     emb2 = model.encode([text2])
 
