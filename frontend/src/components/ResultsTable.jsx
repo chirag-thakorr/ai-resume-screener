@@ -12,6 +12,7 @@ export default function ResultsTable({ data }) {
           <th>Final Score</th>
           <th>Semantic</th>
           <th>Skills</th>
+          <th>Missing Skills</th>
         </tr>
       </thead>
 
@@ -22,6 +23,7 @@ export default function ResultsTable({ data }) {
             <td>{r.final_score}</td>
             <td>{r.semantic_score}</td>
             <td>{r.matched_skills.join(", ")}</td>
+            <td>{r.missing_skills.join(", ")}</td>
           </tr>
         ))}
       </tbody>

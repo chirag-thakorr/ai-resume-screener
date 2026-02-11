@@ -50,7 +50,7 @@ class MatchAPI(APIView):
 
         for r in resumes:
             # score, matched = skill_match_score(jd.skills, r.skills)
-            score, matched, sem = combined_score(jd, r)
+            score, matched, missing, sem = combined_score(jd, r)
 
             results.append({
                 "resume_id": r.id,
@@ -58,7 +58,8 @@ class MatchAPI(APIView):
                 "final_score": score,
                 "skill_score": len(matched),
                 "semantic_score": sem,
-                "matched_skills": matched
+                "matched_skills": matched,
+                "missing_skills": missing
             })
             # results.append({
             #     "resume_id": r.id,
